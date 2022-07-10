@@ -1,12 +1,13 @@
 <template>
     <div contenteditable="true" class="search-area">
-        <div :key="index" v-for="(text, index) in textArray" class="single-text">
+        <div :key="index" v-for="(textObject, index) in textObjectArray" class="single-text">
             <div class="text-area">
-                {{ text }}
+                {{ textObject.text }}
+                {{ textObject.id }}
             </div>
-            <button class="delete-button-area">
+            <el-button @click="onDeleteText(textObject.id)" class="delete-button-area" round>
                 <i class="fa-solid fa-trash"></i>
-            </button>
+            </el-button>
         </div>
     </div>
     <!-- v-model can 1.react data, 2.show selected label on form -->
@@ -25,9 +26,10 @@
 
 <script lang="ts">
 import { propsToAttrMap } from '@vue/shared';
+import { ThumbInstance } from 'element-plus';
 import { defineComponent, onMounted, ref, Prop, Component } from 'vue';
 import { Options, Vue } from 'vue-class-component';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const OPTIONS = [
     {
@@ -48,7 +50,12 @@ export default class MainEditor extends Vue {
 
     public selectedValue = '';
 
-    public textArray = ['test', 'test2'];
+    public textArray: { id: number, text: string }[] = [
+        { id: 1, text: 'initial text' },
+    ];
+    // public textObjectArray: {[key: string]: string} = {};
+    public textObjectArray: { id: string, text: string }[] = [
+    ];
 
     // public option1 = "option1";
     // public option2 = "option1";
@@ -57,6 +64,8 @@ export default class MainEditor extends Vue {
     public get getMsg(): string {
         return this.msg;
     }
+
+
 
     created() {
         console.log("created called");
@@ -68,8 +77,21 @@ export default class MainEditor extends Vue {
     }
 
     public onSubmit() {
-        console.log('submit');
-        this.textArray.push(this.selectedValue);
+        const uuid = uuidv4();
+        const obj = { id: uuid, text: this.selectedValue };
+        // this.textObjectArray[uuid] = this.selectedValue;
+        this.textObjectArray.push(obj);
+        for (const textObject of this.textObjectArray) {
+            console.log(textObject.id);
+            console.log(textObject.text);
+        }
+    }
+
+    public onDeleteText(index: string) {
+        // const indexOfObject = this.textObjectArray.findIndex((element) => element.id === index);
+        const indexOfObject = this.textObjectArray.findIndex(element => element.id === index);
+        console.log(indexOfObject);
+        this.textObjectArray.splice(indexOfObject, 1);
     }
 }
 </script>
@@ -94,11 +116,13 @@ export default class MainEditor extends Vue {
     display: flex;
     width: 100%;
     justify-content: center;
+    align-items: center;
 }
 
 .text-area {}
 
 .delete-button-area {
     margin: 0 20px;
+    height: 20px;
 }
 </style>
