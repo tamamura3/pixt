@@ -1,10 +1,10 @@
 <template>
-    <div contenteditable="true" class="search-area">
-        <div :key="index" v-for="(textObject, index) in textObjectArray" class="single-text">
-            <div class="text-area">
+    <div class="search-area">
+        <div :key="index" v-for="(textObject, index) in textObjectArray" class="text-area">
+            <p class="single-text" contenteditable="true" aria-multiline="true"
+                style="white-space: pre-wrap; min-width: 1px;">
                 {{ textObject.text }}
-                {{ textObject.id }}
-            </div>
+            </p>
             <el-button @click="onDeleteText(textObject.id)" class="delete-button-area" round>
                 <i class="fa-solid fa-trash"></i>
             </el-button>
@@ -30,21 +30,9 @@ import { ThumbInstance } from 'element-plus';
 import { defineComponent, onMounted, ref, Prop, Component } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import { v4 as uuidv4 } from 'uuid';
+import { Console } from 'console';
 
-const OPTIONS = [
-    {
-        value: 'Option1',
-        label: 'Option1',
-    },
-    {
-        value: 'Option2',
-        label: 'Option2',
-    },
-    {
-        value: 'Option3',
-        label: 'Option3',
-    },
-]
+
 export default class MainEditor extends Vue {
     public msg = 'hey';
 
@@ -60,12 +48,9 @@ export default class MainEditor extends Vue {
     // public option1 = "option1";
     // public option2 = "option1";
 
-
     public get getMsg(): string {
         return this.msg;
     }
-
-
 
     created() {
         console.log("created called");
@@ -74,6 +59,23 @@ export default class MainEditor extends Vue {
     mounted() {
         console.log("mounted called");
         this.msg = 'on mounted';
+
+        const out = document.querySelector('.search-area')!;
+        out.addEventListener(
+            'keydown', (e) => {
+                const target = e as KeyboardEvent;
+                if (target.code === 'Enter') {
+                    // TODO: Add next line when Enter pressed
+                    console.log('return');
+                }
+            }
+        );
+        // out.addEventListener('input', () => {
+        //     if (out.innerHTML === '') {
+        //         out.innerHTML = '<p>test</p>';
+        //     }
+        // //     out.textContent = out.innerHTML;
+        // });
     }
 
     public onSubmit() {
@@ -110,7 +112,7 @@ export default class MainEditor extends Vue {
     width: 100%;
 }
 
-.single-text {
+.text-area {
     background-color: lightgreen;
     margin: 3px 0;
     display: flex;
@@ -119,7 +121,11 @@ export default class MainEditor extends Vue {
     align-items: center;
 }
 
-.text-area {}
+.single-text {
+    width: 100%;
+    margin: 0 5rem;
+    text-align: start;
+}
 
 .delete-button-area {
     margin: 0 20px;
