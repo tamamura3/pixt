@@ -1,4 +1,6 @@
 # pixt
+Pixt is a web service where you can write an emial in Englich easily by selecting phrases.
+This is my personal project for this summer🎐🏖🏖🏖
 
 ## Project setup
 ```
